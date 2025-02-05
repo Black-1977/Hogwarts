@@ -2,12 +2,14 @@ package ru.hogwarts.school.service.impl;
 
 import org.springframework.stereotype.Service;
 import ru.hogwarts.school.model.Faculty;
+import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.repository.FacultyRepository;
 import ru.hogwarts.school.service.FacultyService;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 @Service
 public class FacultyServiceImpl implements FacultyService {
@@ -34,7 +36,7 @@ public class FacultyServiceImpl implements FacultyService {
         Faculty oldFaculty = facultyRepository.findById(id).orElseThrow(IllegalArgumentException::new);
         oldFaculty.setName(faculty.getName());
         oldFaculty.setColor(faculty.getColor());
-        return facultyRepository.save(faculty);
+        return facultyRepository.save(oldFaculty);
     }
 
     @Override
@@ -46,4 +48,15 @@ public class FacultyServiceImpl implements FacultyService {
     public List<Faculty> getFacultiesByColor(String color) {
         return facultyRepository.findByColor(color);
     }
+
+    @Override
+    public List<Faculty> getFacultiesByNameOrColor(String name, String color) {
+        return facultyRepository.findByNameIgnoreCaseOrColorIgnoreCase(name, color);
+    }
+
+    @Override
+    public List<Student> getStudentsById(Long id) {
+        return Objects.requireNonNull(facultyRepository.findById(id).orElse(null)).getStudents();
+    }
+
 }
