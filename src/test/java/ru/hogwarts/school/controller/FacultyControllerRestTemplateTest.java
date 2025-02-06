@@ -1,7 +1,5 @@
 package ru.hogwarts.school.controller;
 
-import org.h2.tools.Server;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,9 +10,11 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.util.UriComponentsBuilder;
 import ru.hogwarts.school.model.Faculty;
 import ru.hogwarts.school.repository.FacultyRepository;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -35,11 +35,6 @@ class FacultyControllerRestTemplateTest {
     @BeforeEach
     public void clearDatabase() throws Exception {
         facultyRepository.deleteAll();
-    }
-
-    @BeforeAll
-    public static void initTest() throws Exception {
-        Server.createWebServer("-web","-webAllowOthers","-webPort", "8082").start();
     }
 
     @Test
@@ -78,7 +73,7 @@ class FacultyControllerRestTemplateTest {
     }
 
     @Test
-    void updateFaculty() {
+    void testedUpdateFaculty() {
         Faculty faculty = new Faculty("Faculty1", "Black");
         faculty = facultyRepository.save(faculty);
 
@@ -115,7 +110,7 @@ class FacultyControllerRestTemplateTest {
     }
 
     @Test
-    void getFacultiesByNaneOrColor() {
+    void getFacultiesByNameOrColor() {
     }
 
     @Test

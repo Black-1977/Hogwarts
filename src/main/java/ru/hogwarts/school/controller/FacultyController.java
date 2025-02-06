@@ -37,7 +37,7 @@ public class FacultyController {
     }
 
     @GetMapping
-    public List<Faculty> getFacultiesByNaneOrColor(@RequestParam String text) {
+    public List<Faculty> getFacultiesByNameOrColor(@RequestParam String text) {
         return facultyService.getFacultiesByNameOrColor(text, text);
     }
 
