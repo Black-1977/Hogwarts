@@ -8,10 +8,7 @@ import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.repository.FacultyRepository;
 import ru.hogwarts.school.service.FacultyService;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 @Service
 public class FacultyServiceImpl implements FacultyService {
@@ -69,6 +66,15 @@ public class FacultyServiceImpl implements FacultyService {
     public List<Student> getStudentsById(Long id) {
         logger.info("Student found by faculty id: " + id);
         return Objects.requireNonNull(facultyRepository.findById(id).orElse(null)).getStudents();
+    }
+
+    @Override
+    public String getLongestFacultyName() {
+        return facultyRepository.findAll()
+                .stream()
+                .map(Faculty::getName)
+                .max(Comparator.comparing(String::length))
+                .orElse("");
     }
 
 }

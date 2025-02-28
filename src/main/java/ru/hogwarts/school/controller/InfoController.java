@@ -8,8 +8,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.hogwarts.school.service.impl.AvatarServiceImpl;
 
+import java.util.stream.Stream;
+
 @RestController
-@RequestMapping("port")
 public class InfoController {
 
     private static final Logger logger = LoggerFactory.getLogger(InfoController.class);
@@ -17,9 +18,45 @@ public class InfoController {
     @Value("${server.port}")
     private int port;
 
-    @GetMapping
+    @GetMapping("port")
     public String portInfo() {
         logger.debug("Server port: {}", port);
         return ("Port : " + port);
     }
+
+    @GetMapping("calculate")
+    public int calculate(){
+
+        int sum;
+        long startTime, endTime;
+        final int MAX_SIZE = 1_000_000;
+
+        startTime = System.currentTimeMillis();
+        sum = Stream
+                .iterate(1, a -> a + 1)
+                .limit(MAX_SIZE)
+                .reduce(0, Integer::sum);
+        endTime = System.currentTimeMillis();
+        logger.info("Calculate {} time 1: {}", sum, endTime - startTime);
+
+        startTime = System.currentTimeMillis();
+        sum = Stream
+                .iterate(1, a -> a + 1)
+                .limit(MAX_SIZE)
+                .parallel()
+                .reduce(0, Integer::sum);
+        endTime = System.currentTimeMillis();
+        logger.info("Calculate {} time 2: {}", sum, endTime - startTime);
+
+        sum = 0;
+        startTime = System.currentTimeMillis();
+        for (int i = 0; i <= MAX_SIZE; i++) {
+            sum += i;
+        }
+        endTime = System.currentTimeMillis();
+        logger.info("Calculate {} time 3: {}", sum, endTime - startTime);
+
+        return sum;
+    }
+
 }

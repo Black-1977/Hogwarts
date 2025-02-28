@@ -57,13 +57,18 @@ public class StudentController {
     }
 
     @GetMapping("getAvgAgeOfStudents")
-    int getAvgAgeOfStudents(){
+    public int getAvgAgeOfStudents(){
         return studentService.getAvgAgeOfStudents();
     }
 
     @GetMapping("getLast5Students")
-    List<Student> getLast5Students(){
+    public List<Student> getLast5Students(){
         return studentService.getLast5Students();
     }
 
+    @GetMapping("getStudentNamesStartsWithA")
+    public List<String> getStudentNamesStartsWithA() { return studentService.getStudentNamesStartsWithA();}
+
+    @GetMapping("getAvgAgeOfStudentsWithStreams")
+    public Double getAvgAgeOfStudentsWithStreams() {return studentService.getAvgAgeOfStudentsWithStreams();}
 }
