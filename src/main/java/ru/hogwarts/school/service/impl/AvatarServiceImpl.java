@@ -1,6 +1,8 @@
 package ru.hogwarts.school.service.impl;
 
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -31,6 +33,8 @@ public class AvatarServiceImpl implements AvatarService {
     private final StudentRepository studentRepository;
     private final int BUFFER_SIZE = 1024;
 
+    private static final Logger logger = LoggerFactory.getLogger(AvatarServiceImpl.class);
+
     @Value("${path.to.avatar.folder}")
     private String avatarsDirectory;
 
@@ -42,7 +46,7 @@ public class AvatarServiceImpl implements AvatarService {
     public void uploadAvatar(Long studentId, MultipartFile avatarFile) throws IOException {
 
         Student student = studentRepository.findById(studentId).orElseThrow();
-        Path filePath = Path.of(avatarsDirectory, "avatar" + studentId + "." + getExtensions(Objects.requireNonNull(avatarFile.getOriginalFilename())));
+        Path filePath = Path.of(avatarsDirectory,"avatar" + studentId + "." + getExtensions(Objects.requireNonNull(avatarFile.getOriginalFilename())));
         Files.createDirectories(filePath.getParent());
         Files.deleteIfExists(filePath);
         try (
@@ -60,6 +64,7 @@ public class AvatarServiceImpl implements AvatarService {
         avatar.setMediaType(avatarFile.getContentType());
         avatar.setData(generateDataForDB(filePath));
         avatarRepository.save(avatar);
+        logger.info("Avatar uploaded successfully");
     }
 
     private byte[] generateDataForDB(Path filePath) throws IOException {
@@ -80,6 +85,7 @@ public class AvatarServiceImpl implements AvatarService {
 
     @Override
     public Avatar findAvatar(Long studentId) {
+        logger.info("Finding avatar for student: " + studentId);
         return avatarRepository.findByStudent_id(studentId)
                 .orElse(new Avatar());
     }
@@ -88,6 +94,7 @@ public class AvatarServiceImpl implements AvatarService {
     public List<Avatar> getPaginatedAvatars(int pageNumber, int pageSize) {
         Pageable pageable = PageRequest.of(pageNumber - 1, pageSize);
         Page<Avatar> avatarPage = avatarRepository.findAll(pageable);
+        logger.info("Paginated avatars: " + avatarPage.getTotalElements());
         return avatarPage.getContent();
     }
 
