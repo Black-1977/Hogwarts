@@ -71,4 +71,10 @@ public class StudentController {
 
     @GetMapping("getAvgAgeOfStudentsWithStreams")
     public Double getAvgAgeOfStudentsWithStreams() {return studentService.getAvgAgeOfStudentsWithStreams();}
+
+    @GetMapping("print-parallel")
+    public void printParallel() {studentService.printParallel();}
+
+    @GetMapping("print-synchronized")
+    public void printSynchronized() {studentService.printSynchronized();}
 }
