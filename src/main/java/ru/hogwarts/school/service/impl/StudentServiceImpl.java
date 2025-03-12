@@ -8,9 +8,7 @@ import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.repository.StudentRepository;
 import ru.hogwarts.school.service.StudentService;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
 @Service
@@ -99,12 +97,58 @@ public class StudentServiceImpl implements StudentService {
                 .sorted()
                 .toList();
     }
-        @Override
-        public Double getAvgAgeOfStudentsWithStreams() {
-            return studentRepository.findAll()
-                    .stream()
-                    .mapToInt(Student::getAge)
-                    .average()
-                    .orElse(0.0);
-        }
+
+    @Override
+    public Double getAvgAgeOfStudentsWithStreams() {
+        return studentRepository.findAll()
+                .stream()
+                .mapToInt(Student::getAge)
+                .average()
+                .orElse(0.0);
     }
+
+    @Override
+    public void printParallel() {
+        List<Student> students = studentRepository.findAll();
+
+        printStudentName(students.get(0));
+        printStudentName(students.get(1));
+
+        new Thread(() -> {
+            printStudentName(students.get(2));
+            printStudentName(students.get(3));
+        }).start();
+
+        new Thread(() -> {
+            printStudentName(students.get(4));
+            printStudentName(students.get(5));
+        }).start();
+    }
+
+    @Override
+    public void printSynchronized() {
+        List<Student> students = studentRepository.findAll();
+        Object LOCK = new Object();
+
+        printStudentName(students.get(0));
+        printStudentName(students.get(1));
+
+        new Thread(() -> {
+            synchronized (LOCK) {
+                printStudentName(students.get(2));
+                printStudentName(students.get(3));
+            }
+        }).start();
+
+        new Thread(() -> {
+            synchronized (LOCK) {
+                printStudentName(students.get(4));
+                printStudentName(students.get(5));
+            }
+        }).start();
+    }
+
+    private void printStudentName(Student student) {
+        System.out.println(student.getName());
+    }
+}
